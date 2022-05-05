@@ -109,7 +109,8 @@ this is a function that you will use to validate value. When some values are not
 ```
 
 4. Show with special
-rule in example means : minimal input length is 10 of string
+
+     rule in example means : minimal input length is 10 of string
 ```js
 <ValidatorMessage disableEmptyCheck className="text-align-left" value={yourValue} special='type:string|min:10' />
 ```
