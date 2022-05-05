@@ -9,7 +9,7 @@ import './validator-style.css'
  */
 
 /**
- * This is a custom Tokdis' m-web overpowered validator. This validator use for validating input and submit button. 
+ * This validator use for validating input and submit button. 
  * When user is not following the rules, message will appear (if you using ValidatorMessage) and ValidatorExecute will return false.
  * The full usage example is in SectionSelectAddress.jsx and RegisterPremium.jsx file
  * use ValidatorMessage if you need to show alert message under the input
@@ -59,7 +59,8 @@ export function ValidatorExecute({ values = [], special = [] }) {
  */
 
 /**
- * Use this for show ValidatorMessage after user click submit button
+ * Use this for control show/hide a ValidatorMessage. Usually we needs to show validation after user hit submit button.
+ * Use this only in Functional component
  * @param { PropTypeFunctionalLateValidator } value
  */
 
@@ -77,7 +78,7 @@ export function useLateValidator(value = false){
 
 /**
  * Use this for controlling ValidatorMessage to hide or show. Usually we needs to show validation after user hit submit button.
- * create new constructor in your
+ * Use this only in Class component
  * @param { PropTypeLateValidator } hide
  * @param { PropTypeLateValidator } show
  */
