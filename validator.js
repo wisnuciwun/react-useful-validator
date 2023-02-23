@@ -3,36 +3,34 @@ import './validator-style.css'
 
 /**
  * 
- * @typedef PropTypes 
+ * @typedef PropTypesArrayValidatorExecute 
  * @property { any[] } values - Insert all values which want to validate inside an array
- * @property { string } special - Use your special validator like max length and/or regex, first by writing it's index of the value. example '1|max:9. if you use backslash \ on regex or any special character, write it twice'
+ * @property { string } rules - Use your special validator like max length and/or regex, first by writing it's index of the value. example '1|max:9. if you use backslash \ on regex or any special character, write it twice'
  */
 
 /**
- * This validator use for validating input and submit button. 
- * When user is not following the rules, message will appear (if you using ValidatorMessage) and ValidatorExecute will return false.
- * The full usage example is in SectionSelectAddress.jsx and RegisterPremium.jsx file
+ * ArrayValidatorExecute use for validating values and submit button. 
+ * When several value inside the array is not following the rules, message will appear (if you using ValidatorMessage) and ArrayValidatorExecute will return false.
+ * The full usage example is on validator.js, then scroll to end
  * use ValidatorMessage if you need to show alert message under the input
- * use ValidatorExecute if you need to validating submit button.
- * a ValidatorExecute usage is a must. Because Validator Message is just showing message and not validating the submit button if you have it.
- * You can add your own rule on switchEngine function (hope you contribute)
+ * You can add your own rule on switchEngine function (you can add your own rule there)
  * useLateValidator if you want to show ValidatorMessage appear when user click submit button
- * @param { PropTypes } values
- * @param { PropTypes } special
+ * @param { PropTypesArrayValidatorExecute } values
+ * @param { PropTypesArrayValidatorExecute } rules
  */
 
-export function ValidatorExecute({ values = [], special = [] }) {
+export function ArrayValidatorExecute({ values = [], rules = [] }) {
      let execute = ''
      if (values.length != 0) {
           execute = values.every(val => val != '')
 
-          if (special.length != 0) {
+          if (rules.length != 0) {
                let newRule = []
-               special.forEach(val => {
-                    let rules = val.split('|')
+               rules.forEach(val => {
+                    let splitRule = val.split('|')
                     let valueIndex = rules[0]
-                    rules.shift()
-                    rules.forEach(opt => {
+                    splitRule.shift()
+                    splitRule.forEach(opt => {
                          let rule = opt.split(':')
                          switchEngine(rule[0], values[valueIndex], rule[1], newRule)
                     })
@@ -104,7 +102,7 @@ export function Late () {
  * @property { ? } value - You should write the value
  * @property { boolean } disableEmptyCheck - Disable validating if value is null or empty. Use this if you have more than one ValidatorMessage
  * @property { string } message - Write your validator message
- * @property { string } special - Write your rule or regex to validate your input. if you use backslash \ on regex or any special character, write it twice
+ * @property { string } rules - Write your rule or regex to validate your input. if you use backslash \ on regex or any special character, write it twice
  * @property { string } className - Use your own CSS className
  * @property { boolean } display - Use this if you implement useLateValidator to hide your ValidatorMessage until user hit submit Button
  */
@@ -114,12 +112,12 @@ export function Late () {
  * @param { PropTypeMessage } value
  * @param { PropTypeMessage } disableEmptyCheck
  * @param { PropTypeMessage } message
- * @param { PropTypeMessage } special
+ * @param { PropTypeMessage } rules
  * @param { PropTypeMessage } className
  * @param { PropTypeMessage } display
  *  */
 
-export function ValidatorMessage({ value = '', disableEmptyCheck = false, message = 'Please fill the blank', special = [], className = {}, display = true, ...rest }) {
+export function ValidatorMessage({ value = '', disableEmptyCheck = false, message = 'Please fill the blank', rules = [], className = {}, display = true, ...rest }) {
      let execute = ''
 
      if (value != '' && value != undefined && value != null) {
@@ -129,10 +127,10 @@ export function ValidatorMessage({ value = '', disableEmptyCheck = false, messag
           execute = false
      }
 
-     if (special.length != 0) {
+     if (rules.length != 0) {
           let newRule = []
-          let rules = special.split('|')
-          rules.forEach(opt => {
+          let splitRules = rules.split('|')
+          splitRules.forEach(opt => {
                let rule = opt.split(':')
                switchEngine(rule[0], value, rule[1], newRule)
           })
@@ -159,6 +157,60 @@ export function ValidatorMessage({ value = '', disableEmptyCheck = false, messag
           return null
      }     
 }
+
+/**
+ * 
+ * @typedef PropTypesValidatorBoolean 
+ * @property { any[] } value - Insert value which want to validate
+ * @property { string } rule - Use your special validator like max length and/or regex, first by writing it's index of the value. example '1|max:9. if you use backslash \ on regex or any special character, write it twice'
+ * @property { boolean } disableEmptyCheck - Set the disampeEmptyCheck to true if you want to skip validating when value is empty
+ */
+
+/**
+ * ValidatorBoolean use for validating a single value. 
+ * When value is not following the rules, ValidatorBoolean will return false.
+ * The full usage example is on validator.js, then scroll to end
+ * @param { PropTypesValidatorBoolean } value
+ * @param { PropTypesValidatorBoolean } rule
+ * @param { PropTypesValidatorBoolean } disableEmptyCheck
+ */
+
+export function ValidatorBoolean({value = '', rule = '', disableEmptyCheck = true}) {
+     let valid = ''
+
+     if (value != '' && value != undefined && value != null) {
+          valid = true
+     }
+     else {
+          valid = false
+     }
+
+     if (rule.length != 0) {
+          let newRule = []
+          let rules = rule.split('|')
+          rules.forEach(opt => {
+               let finalRule = opt.split(':')
+               switchEngine(finalRule[0], value, finalRule[1], newRule)
+          })
+
+          if (newRule.every(val => val == true) && valid) {
+               valid = true
+          }
+          else {
+               valid = false
+          }
+
+          newRule.length = 0
+     }
+     
+     if ((value == '' || value == undefined || value == null) && disableEmptyCheck) {
+          return true
+     }
+     else {
+          return valid
+     }     
+}
+
 
 function switchEngine(checkermodule, value, rule, newRule){
      switch (checkermodule) {
@@ -191,6 +243,7 @@ function regexCheck(value = '', rule = /e/){
 
 function typeCheck(value = '', type) {
      let res = ''
+
      switch (type) {
           case 'number':
                if (Number(value).toString() == 'NaN') {
@@ -219,7 +272,7 @@ function typeCheck(value = '', type) {
 
 function minCheck(value = '', length) {
      let res = ''
-     if (value.length > length) {
+     if (value.length >= length && value != null) {
           res = true
      }
      else {
@@ -230,11 +283,33 @@ function minCheck(value = '', length) {
 
 function maxCheck(value = '', length) {
      let res = ''
-     if (value.length < length) {
+     if (value.length <= length && value != null) {
           res = true
      }
      else {
           res = false
      }
      return res
+}
+
+// *** Examples ***
+
+const exampleArrayValidatorExecute = () => {
+     // ArrayValidatorExecute({ values: [data.name, data.handphone, data.province, data.city, data.district, data.zipcode?.postal_code, data.address], rules: ['1|min:11|type:number', '6|min:14'] })
+}
+
+const exampleValidatorBoolean = () => {
+     // ValidatorBoolean({
+     //      value: data.password,
+     //      rule: "type:string",
+     //      disableEmptyCheck: false
+     // })
+}
+
+const exampeValidatorMessage = () => {
+     // let validator = useLateValidator() // if you want to useLateValidator
+     // const submitButton = () => {
+     //      validator.set(true) // set to true after submit button clicked
+     // }
+     // <ValidatorMessage style={{marginTop: '-10px'}} value={data.address} message="Please fill address field" rules='min:14' display={validator.show} />
 }
