@@ -94,6 +94,8 @@ export function Late () {
 
  Late.prototype.show = function() {
      return this.show
+
+     
  }
 
 /**
@@ -272,7 +274,7 @@ function typeCheck(value = '', type) {
 
 function minCheck(value = '', length) {
      let res = ''
-     if (value.length >= length && value != null) {
+     if (value?.length >= length && value != null) {
           res = true
      }
      else {
@@ -283,7 +285,7 @@ function minCheck(value = '', length) {
 
 function maxCheck(value = '', length) {
      let res = ''
-     if (value.length <= length && value != null) {
+     if (value?.length <= length && value != null) {
           res = true
      }
      else {
@@ -295,15 +297,15 @@ function maxCheck(value = '', length) {
 // *** Examples ***
 
 const exampleArrayValidatorExecute = () => {
-     // ArrayValidatorExecute({ values: [data.name, data.handphone, data.province, data.city, data.district, data.zipcode?.postal_code, data.address], rules: ['1|min:11|type:number', '6|min:14'] })
+     // ValidatorExecute({ values: [data.name, data.handphone, data.province, data.city, data.district, data.zipcode?.postal_code, data.address], rules: ['1|min:11|type:number', '6|min:14'] })
 }
 
 const exampleValidatorBoolean = () => {
-     // ValidatorBoolean({
-     //      value: data.password,
-     //      rule: "type:string",
-     //      disableEmptyCheck: false
-     // })
+     // ValidatorBoolean(
+     //      data.password,
+     //      "type:string",
+     //      false
+     //    )
 }
 
 const exampeValidatorMessage = () => {
